@@ -30,11 +30,8 @@ public class MyCar : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        
-        int jumpPower = 600;
 
         int nCount = Input.touchCount;
-        Debug.Log("DEBUG: int nCount" + Input.touchCount);
 
         // 전복 방지
         if (Math.Abs(transform.rotation.z) > 30)
@@ -84,7 +81,7 @@ public class MyCar : MonoBehaviour {
 
                             if (fAngle > 15 && fAngle < 165)
                             {
-                                if (transform.position.y < 1) // 점프사용중 회전 금지
+                                if (transform.position.y < 2) // 점프사용중 회전 금지
                                 {
                                     if (y > 0)
                                     {
@@ -128,7 +125,7 @@ public class MyCar : MonoBehaviour {
 
                             Debug.Log("DEBUG fAngle = " + fAngle);
 
-                            if (transform.position.y < 1) // 점프사용중 회전 금지
+                            if (transform.position.y < 2) // 점프사용중 회전 금지
                             {
                                 if (fAngle >15 && fAngle <165)
                                 {
@@ -162,8 +159,6 @@ public class MyCar : MonoBehaviour {
                             break;
                             
                     }
-                    
-
                 }
             }
         }
@@ -212,11 +207,22 @@ public class MyCar : MonoBehaviour {
 
     void Move()
     {
-        int speed = 5;
         //********************************** 이동
+        int speed = 5;
+
         x = (touch.position.y - StartPos.y);
         y = (touch.position.x - StartPos.x);
-        rb.AddRelativeForce(new Vector3(0, 0, x) * speed, ForceMode.Impulse);
+        if (transform.position.y > 2) // 점프사용중 회전 금지
+        {
+            speed = 2;
+        }
+
+        if (transform.position.y > 2 && x < 0) // 점프후진일 경우 움직이지 않음
+        {
+
+        }
+        else 
+            rb.AddRelativeForce(new Vector3(0, 0, x) * speed, ForceMode.Impulse);
         //***************************************
     }
 

@@ -2,38 +2,44 @@
 using System.Collections;
 
 public class Cube : MonoBehaviour {
-
-    bool Chk = false;
+    
+    bool TriggerChk = false;
     Vector3 StartPos;
-	// Use this for initialization
-	void Start () {
+
+    public GameManager gameManager {get; set;}
+
+    // Use this for initialization
+    void Start () {
         StartPos = gameObject.transform.position;
     }
 
     void OnTriggerEnter(Collider coll)
     {
 
-        Chk = true;
+        TriggerChk = true;
         //AudioSource.PlayClipAtPoint(snd, transform.position);
         //Destroy(coll.gameObject);
         //Destroy(gameObject);
     }
 
+    void OnTriggerExit(Collider coll)
+    {
+        gameManager.signale(this.gameObject);
+    }
+
     // Update is called once per frame
     void Update () {
 
-        if (Chk == true)
+        if (TriggerChk == true)
         {
             gameObject.transform.Translate(new Vector3(0, 1, 0));
             if ((gameObject.transform.position.y - StartPos.y) > 50)
             {
-                Chk = false;
+                TriggerChk = false;
                 gameObject.transform.position = StartPos;
             }
         }
-        else
-        {
-            transform.Rotate(new Vector3 (0,1,0));
-        }
+
+        transform.Rotate(new Vector3(0, 1, 0));
     }
 }
