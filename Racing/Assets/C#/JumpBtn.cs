@@ -31,7 +31,7 @@ public class JumpBtn : MonoBehaviour , IPointerDownHandler , IPointerUpHandler
     }
     // Use this for initialization
     void Start () {
-        GameObj = GameObject.Find("sedan1");
+        GameObj = GameObject.Find("GameDataManager").GetComponent<GameManager>().m_MyCar; 
     }
 
     // Update is called once per frame
@@ -41,7 +41,6 @@ public class JumpBtn : MonoBehaviour , IPointerDownHandler , IPointerUpHandler
         {
             if (bPressed == true && Input.touchCount > 0)
             {
-                GameObj = GameObject.Find("sedan1");
                 Rigidbody rb = GameObj.GetComponent<Rigidbody>();
                 //y = 388.x = 263.9999
                 touch = Input.GetTouch(0);

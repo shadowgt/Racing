@@ -9,3 +9,7 @@ EditorBuildSettings:
     path: Assets/Scene/Main.unity
   - enabled: 1
     path: Assets/Scene/Race Scene.unity
+  - enabled: 1
+    path: Assets/Scene/MyGarage.unity
+  - enabled: 1
+    path: Assets/Scene/Shop.unity

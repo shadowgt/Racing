@@ -7,7 +7,6 @@ public class HandleBtn : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        
         HandleBtnStartPos = HandleBtnAltPos = this.transform.position;
     }
 
@@ -15,7 +14,6 @@ public class HandleBtn : MonoBehaviour
     void Update()
     {
         int nCount = Input.touchCount;
-
 
         ///////////////////////////
         Touch touch;

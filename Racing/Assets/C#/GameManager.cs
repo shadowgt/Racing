@@ -11,7 +11,13 @@ public class GameManager : MonoBehaviour {
     public GameObject ScoreTitelPrefab, ScoreColumPrefab, ScoresPrefab;
     private GameObject CubeObj , CubeObj1 , CubeObj2 , CubeObj3, CubeObj4;
     private GameObject ScoreTitelObj, ScoreColumObj, ScoresObj;
-    private bool b1, b2, b3, b4, bGameEnd = false;
+    
+    // 선택된 자동차 관련
+    public GameObject m_SedanPrefab, m_CowPrefab, m_TankPrefab;
+    public GameObject m_MyCar { get; set; }
+
+    private bool b1, b2, b3, b4 = false;
+    public bool bGameEnd = false;
     private int MSec = 0;
     public Transform ScoreBaseParent;
     public Transform CanvasParent;
@@ -45,6 +51,65 @@ public class GameManager : MonoBehaviour {
         cube = CubeObj4.GetComponent<Cube>();
         cube.gameManager = this;
 
+
+        /////////////////////////////////////////// 여기서 부터 선택된 자동차 찾고 보여주기
+
+        dbAccess db = GetComponent<dbAccess>();
+        if (db == null)
+        {
+            Debug.Log("DEBUG: GetComponent ist Null");
+        }
+
+        db.OpenDB("race_db.sqlite");
+
+        IDataReader reader = db.BasicQuery("SELECT * FROM my_car_tb");
+        m_MyCar = null;
+        while (reader.Read())
+        {
+            if (reader.GetBoolean(0) != true)
+                continue;
+
+            //reader.GetInt32(0); // is_select
+            //reader.GetInt32(1); // car_type
+            int carType = reader.GetInt32(1);
+            Debug.Log("DEBUG: switch (carType)");
+            Debug.Log("DEBUG: carType : " + carType);
+
+            switch (carType)
+            {
+                case 0:
+                    m_MyCar = Instantiate(m_SedanPrefab);
+                    break;
+                case 1:
+                    m_MyCar = Instantiate(m_CowPrefab);
+                    break;
+                case 2:
+                    m_MyCar = Instantiate(m_TankPrefab);
+                    break;
+                default:
+                    m_MyCar = Instantiate(m_SedanPrefab);
+                    break;
+            }
+
+            m_MyCar.transform.position = new Vector3(0, 0, 0);
+
+            if (carType == 1)
+            {
+                m_MyCar.transform.localScale = new Vector3(20, 20, 20);
+            }
+            else if (carType == 2)
+            {
+                m_MyCar.transform.localScale = new Vector3((float)0.5, (float)0.5, (float)0.5);
+            }
+            else
+            { }
+
+        }
+
+        GameObject MainCameraObj = GameObject.Find("Main Camera");
+        MainCameraObj.transform.SetParent(m_MyCar.transform);
+
+        db.CloseDB();
     }
 
 
@@ -96,7 +161,24 @@ public class GameManager : MonoBehaviour {
                 SceneManager.LoadScene(0);
             }
         }
-	}
+
+
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            if (Input.GetKey(KeyCode.Escape))
+
+            {
+                SceneManager.LoadScene(0);
+            }
+        }
+    }
+
+    public void GameEnd()
+    {
+        ShowScore();
+        b1 = b2 = b3 = b4 = false;
+        bGameEnd = true;
+    }
 
     private void ShowScore()
     {
@@ -160,14 +242,8 @@ public class GameManager : MonoBehaviour {
             ScoreList.Add(new HighScore(reader.GetInt32(2).ToString(), reader.GetString(0), Time, (i + k)));
         }
 
-
-
-        db.CloseDB();
-        reader.Close();
-        reader.Dispose();
-        //  DB End
-
-
+        
+       
         // 새 Score 의 순위를 계산하고 빨간색으로 표시합니다. 기존데이터는 검은색
         bNew = false;
         for (int j = 0; j < ScoreList.Count; j++)
@@ -175,44 +251,30 @@ public class GameManager : MonoBehaviour {
             Debug.Log("DEBUG: while (reader.Read())  i = " + j);
 
             GameObject tmpObject = Instantiate(ScoresPrefab);
+
+
             if (ScoreList[j].isNew)
             {
                 bNew = true;
                 tmpObject.GetComponent<ScoreScript>().ShowNewScore(ScoreList[j].Name, ScoreList[j].Score, "#" + ScoreList[j].Rank);
             }
             else
+            {
+                if (j > 9)
+                {
+                    if (bNew == true)
+                        break;
+                    else
+                        continue;
+                }
+
                 tmpObject.GetComponent<ScoreScript>().ShowScore(ScoreList[j].Name, ScoreList[j].Score, "#" + ScoreList[j].Rank);
+            }
 
             tmpObject.transform.SetParent(ScoreBaseParent);
             tmpObject.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-
-            if (j == 9)
-            {
-                if (bNew == false)
-                {
-                    int RankCount = 1;
-                    foreach (HighScore Val in ScoreList)
-                    {
-                        int tmpScore = Int32.Parse(Val.Score);
-                        if (Score > tmpScore)
-                        {
-                            bNew = true;
-                            break;
-                        }
-
-                        RankCount++;
-                    }
-
-                    tmpObject = Instantiate(ScoresPrefab);
-                    tmpObject.GetComponent<ScoreScript>().ShowNewScore(reader.GetString(0), reader.GetInt32(2).ToString(), "#" + ScoreList[j].Rank);
-                    tmpObject.transform.SetParent(ScoreBaseParent);
-                    tmpObject.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-                }
-
-                break;
-            }
         }
 
+        db.CloseDB();
     }
-
 }

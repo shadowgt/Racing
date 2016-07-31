@@ -17,11 +17,13 @@ public  class dbAccess : MonoBehaviour
     private IDbConnection dbcon;
     private IDbCommand dbcmd;
     private IDataReader reader;
+
     
+
     // Use this for initialization
     void Start()
     {
-
+        
     }
     
     public void OpenDB(string p)
@@ -32,13 +34,14 @@ public  class dbAccess : MonoBehaviour
         
         // check if file exists in Application.persistentDataPath
         string filepath = Application.persistentDataPath + "/" + p;
+        //File.Delete(filepath);
         if (!File.Exists(filepath))
         {
             Debug.LogWarning("DEBUG: File \"" + filepath + "\" does not exist. Attempting to create from \"" +
-                             Application.dataPath + "!/assets/" + p);
+                             Application.dataPath + "!/Assets/" + p);
             // if it doesn't ->
             // open StreamingAssets directory and load the db -> 
-            WWW loadDB = new WWW("jar:file://" + Application.dataPath + "!/assets/" + p);
+            WWW loadDB = new WWW("jar:file://" + Application.dataPath + "!/Assets/" + p);
             while (!loadDB.isDone) { }
             // then save to Application.persistentDataPath
             File.WriteAllBytes(filepath, loadDB.bytes);
@@ -53,6 +56,7 @@ public  class dbAccess : MonoBehaviour
         Debug.Log("DEBUG: Stablishing connection to: " + connection);
         dbcon = new SqliteConnection(connection);
         dbcon.Open();
+
 
         Debug.Log("DEBUG: Call to OpenDB: End");
         
@@ -101,7 +105,6 @@ public  class dbAccess : MonoBehaviour
         query = "INSERT INTO " + tableName + "(" + colName + ") " + "VALUES (" + value + ")";
         try
         {
-            
             dbcmd = dbcon.CreateCommand(); // create empty command
             Debug.Log("DEBUG:  dbcmd = dbcon.CreateCommand(); // create empty command ");
             dbcmd.CommandText = query; // fill the command
@@ -111,7 +114,6 @@ public  class dbAccess : MonoBehaviour
         }
         catch (Exception e)
         {
-
             Debug.Log(e);
             return 0;
         }
@@ -130,9 +132,6 @@ public  class dbAccess : MonoBehaviour
 
         Debug.Log("DEBUG: data count : " + reader.FieldCount);
         List<HighScore> result = new List<HighScore>();
-
-
-
 
         return result; // return matches
     }

@@ -17,19 +17,24 @@ public class MyCar : MonoBehaviour {
     private float SpeedHand, AltSpeedHand = 0;
     private Quaternion SpeedHandRolate;
 
+    public bool bPlayed { get; set; } // Mycar 시작 / 정지
+
+
     // Use this for initialization
     void Start () {
         StartPos = GameObject.Find("HandleBtn").transform.position;
-
+        
         ObjectPos = transform.position;
         rb = GetComponent<Rigidbody>();
         Physics.gravity = new Vector3(0, -200.0F, 0);
         SpeedHandRolate = GameObject.Find("SpeedHand").transform.rotation;
-
+        bPlayed = false;
     }
 
     // Update is called once per frame
     void Update () {
+        if (bPlayed == false)
+            return;
 
         int nCount = Input.touchCount;
 

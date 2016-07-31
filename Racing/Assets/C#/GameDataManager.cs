@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using ProgressBar;
 
 public class GameDataManager : MonoBehaviour {
 
@@ -10,10 +11,12 @@ public class GameDataManager : MonoBehaviour {
     private int TimeCount = 0;
     private int Min,Sec,MliSec = 0;
     private int GamePoint = 100000;
+    private bool bGameStart = false;
+    MyCar MyCarObj;
 
     // Use this for initialization
     void Start () {
-	
+        
 	}
 
     public void GetScore()
@@ -28,10 +31,10 @@ public class GameDataManager : MonoBehaviour {
     {
         Debug.Log("DEBUG:  SaveData() ");
         dbAccess db = GetComponent<dbAccess>();
-    
         db.OpenDB("race_db.sqlite");
         db.InsertScore("shadowgt223", GamePoint.ToString(), Min.ToString("D2") +":"+ Sec.ToString("D2") + ":" + MliSec.ToString("D2"));
         db.CloseDB();
+
         
         Debug.Log("DEBUG:  SaveEnd ");
     }
@@ -47,6 +50,14 @@ public class GameDataManager : MonoBehaviour {
         }
         else if (i < 0)
         {
+            if (bGameStart == false)
+            {
+                MyCarObj = GetComponent<GameManager>().m_MyCar.GetComponent<MyCar>();
+                MyCarObj.bPlayed = true;
+                bGameStart = true;
+            }
+
+
             if (this.StartCountTextObj.active)
             {
                 this.StartCountTextObj.active = false ;
@@ -62,6 +73,19 @@ public class GameDataManager : MonoBehaviour {
             {
                 MliSec = 0;
                 Sec++;
+
+                ProgressBarBehaviour ProgressBar = GameObject.Find("ProgressBarLabelInside").GetComponent<ProgressBarBehaviour>();
+                ProgressBar.DecrementValue(2f);
+
+                // 연료가 없으면
+                if (ProgressBar.Value == 0 && MyCarObj.bPlayed == true )
+                {
+                    Debug.Log("DEBUG:  게임종료 ");
+                    // 게임종료
+                    MyCarObj.bPlayed = false;
+                    GetComponent<GameManager>().GameEnd();
+                } 
+
                 if (Sec == 60)
                 {
                     Sec = 0;
@@ -69,6 +93,8 @@ public class GameDataManager : MonoBehaviour {
                     if (Min == 60)
                     {
                         // 게임종료
+                        MyCarObj.bPlayed = false;
+                        GetComponent<GameManager>().GameEnd();
                     }
                 }
             }

@@ -81,18 +81,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\C#\BuyButtonScript.cs" />
+    <Compile Include="Assets\C#\CarResetButtonScript.cs" />
+    <Compile Include="Assets\C#\CarSelectBtnScript.cs" />
     <Compile Include="Assets\C#\Cube.cs" />
     <Compile Include="Assets\C#\GameDataManager.cs" />
     <Compile Include="Assets\C#\GameManager.cs" />
+    <Compile Include="Assets\C#\GarageBtnScript.cs" />
+    <Compile Include="Assets\C#\GarageManagerScript.cs" />
     <Compile Include="Assets\C#\HandleBtn.cs" />
     <Compile Include="Assets\C#\HighScore.cs" />
     <Compile Include="Assets\C#\JumpBtn.cs" />
     <Compile Include="Assets\C#\Main.cs" />
     <Compile Include="Assets\C#\MyCar.cs" />
+    <Compile Include="Assets\C#\NewCarButtonScript.cs" />
     <Compile Include="Assets\C#\ScoreScript.cs" />
+    <Compile Include="Assets\C#\ShopManagerScript.cs" />
     <Compile Include="Assets\C#\StartBtnScript.cs" />
-    <Compile Include="Assets\C#\Test.cs" />
     <Compile Include="Assets\C#\dbAccess.cs" />
+    <Compile Include="Assets\ProgressBar\Script\ProgressBarBehaviour.cs" />
+    <Compile Include="Assets\ProgressBar\Script\ProgressRadialBehaviour.cs" />
+    <Compile Include="Assets\ProgressBar\Script\Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

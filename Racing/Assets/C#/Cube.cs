@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using ProgressBar;
 
 public class Cube : MonoBehaviour {
     
@@ -25,6 +26,7 @@ public class Cube : MonoBehaviour {
     void OnTriggerExit(Collider coll)
     {
         gameManager.signale(this.gameObject);
+        GameObject.Find("ProgressBarLabelInside").GetComponent<ProgressBarBehaviour>().IncrementValue(15f);
     }
 
     // Update is called once per frame
